@@ -65,7 +65,7 @@ export default class PhotoEdit extends Vue {
   //图片背景色
   backgroundColor: string = ''
   //是否高清
-  isHd: boolean = true
+  isHd: boolean = false
   //证件照文件临时地址
   idPhotoTempPath: string = ''
   //排版照文件临时地址
@@ -122,6 +122,7 @@ export default class PhotoEdit extends Vue {
     uni.showLoading({
       title: '正在处理中...'
     });
+	console.info('保存照片')
     const { photoPath: photo, IDPhotoForm, isHd } = this
     const that = this
     if (IDPhotoForm.kb === undefined) {
@@ -131,30 +132,15 @@ export default class PhotoEdit extends Vue {
     const form = cloneDeep(IDPhotoForm)
     //去掉颜色的前缀
     form.color = form.color.replace('#', '')
-    await AddBackgroudColor(IDPhotoForm, 'input_image', isHd ? photo.base64Path : photo.base64HDPath)
+    await AddBackgroudColor(IDPhotoForm, 'input_image', isHd ? photo.base64HD : photo.base64)
       .then((res) => {
         const colorBase64 = res['image_base64']
         if (colorBase64 === undefined) {
           return
         }
-        const saveData = colorBase64.replace(prefix, '')
         //临时文件地址
-        const tempPath = `${wx.env.USER_DATA_PATH}/${Date.now()}.png`;
-        const fs = uni.getFileSystemManager()
-        fs.writeFile({
-          filePath: tempPath,
-          data: saveData,
-          encoding: 'base64',
-          success() {
-            that.savePhotoToAlbum(tempPath)
-          }, fail(err) {
-            console.error("暂存文件到本地发生异常", err);
-            uni.showModal({
-              title: "保存失败",
-              content: `保存发生了异常,保存失败了哦~`
-            });
-          }
-        })
+        const tempPath = `${Date.now()}.png`;
+        this.downloadBase64(colorBase64, tempPath)
       }).catch((err) => {
         console.error("获取带背景色图片网络请求异常", err);
         uni.showModal({
@@ -165,6 +151,14 @@ export default class PhotoEdit extends Vue {
       })
     uni.hideLoading()
   }
+  downloadBase64(originURL:string, name:string) {
+        const a = document.createElement('a')
+        a.href = originURL
+        a.download = name
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+      }
 
   /**
  * 生成六寸排版照
@@ -191,54 +185,30 @@ export default class PhotoEdit extends Vue {
     //去掉颜色的前缀
     idFormCopy.color = idFormCopy.color.replace('#', '')
     //根据选择查看是否生成高清图
-    const targetBase64 = isHd ? photo.base64Path : photo.base64HDPath
+    const targetBase64 = isHd ? photo.base64HD : photo.base64
     //获取带背景色的图
     const { image_base64: colorBase64 } = await AddBackgroudColor(idFormCopy, 'input_image', targetBase64)
-    const handledColorBase64 = colorBase64.replace(prefix, "")
-    //指定路径缓存
-    const tempColorImagePath = `${wx.env.USER_DATA_PATH}/temp_color_image.png`;
-    const fs = uni.getFileSystemManager()
-    //将换底色图片写入本地临时目录
-    fs.writeFile({
-      filePath: tempColorImagePath,
-      data: handledColorBase64,
-      encoding: 'base64',
-      success() {
-        //请求生成排版照
-        GenerateLayoutPhoto(layoutPhotoForm, 'input_image', tempColorImagePath)
-          .then((res) => {
-            const layoutBase64 = res['image_base64']
-            if (layoutBase64 === undefined) {
-              return
-            }
-            const saveData = layoutBase64.replace(prefix, '')
-            //临时文件地址
-            const tempPath = `${wx.env.USER_DATA_PATH}/image${Date.now()}.png`;
-            const fs = uni.getFileSystemManager()
-            fs.writeFile({
-              filePath: tempPath,
-              data: saveData,
-              encoding: 'base64',
-              success() {
-                that.savePhotoToAlbum(tempPath)
-              }, fail(err) {
-                console.error("暂存文件到本地发生异常", err);
-                uni.showModal({
-                  title: "保存失败",
-                  content: `保存发生了异常,保存失败了哦~`
-                });
-              }
-            })
-          }).catch((err) => {
-            console.error("获取带背景色图片网络请求异常", err);
-            uni.showModal({
-              title: "保存失败",
-              content: `保存发生了异常,保存失败了哦~`,
-              showCancel: false,
-            });
-          })
-      }
-    })
+    
+	//请求生成排版照
+	GenerateLayoutPhoto(layoutPhotoForm, 'input_image', colorBase64)
+	  .then((res) => {
+	    const layoutBase64 = res['image_base64']
+	    if (layoutBase64 === undefined) {
+	      return
+	    }
+	    //临时文件地址
+	    const tempPath = `${Date.now()}.png`;
+	    this.downloadBase64(layoutBase64, tempPath);
+	  }).catch((err) => {
+	    console.error("获取带背景色图片网络请求异常", err);
+	    uni.showModal({
+	      title: "保存失败",
+	      content: `保存发生了异常,保存失败了哦~`,
+	      showCancel: false,
+	    });
+	  })
+	
+	uni.hideLoading()
   }
   /**
    * 保存图片到相册

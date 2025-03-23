@@ -1,7 +1,7 @@
 {
-    "name" : "id-photos",
-    "appid" : "",
-    "description" : "",
+    "name" : "lianpu",
+    "appid" : "__UNI__11F0A11",
+    "description" : "脸谱官网及web,h5",
     "versionName" : "1.0.0",
     "versionCode" : "100",
     "transformPx" : false,

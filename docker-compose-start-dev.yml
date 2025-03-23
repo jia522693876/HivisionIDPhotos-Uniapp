@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+  hivision_id_photos_uniapp1:
+    hostname: hivision_id_photos_uniapp1
+    container_name: hivision_id_photos_uniapp1
+    image: registry.cn-hangzhou.aliyuncs.com/jia_common/hivision_id_photos_uniapp:1.0.0
+#    environment:
+#      deploy_info: dev
+    volumes:
+      - ../file/logs/logs1:/var/log
+      - /opt/upFiles:/opt/upFiles
+    ports:
+      - "9851:80"
+	  - "9191:9191"
+    restart: always
