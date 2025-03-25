@@ -5,11 +5,11 @@ services:
     container_name: hivision_id_photos_uniapp1
     image: registry.cn-hangzhou.aliyuncs.com/jia_common/hivision_id_photos_uniapp:1.0.0
 #    environment:
-#      deploy_info: dev
+#      deploy_info: prod
     volumes:
-      - ../file/logs/logs1:/var/log
-      - /opt/upFiles:/opt/upFiles
+      - ../logs/logs1:/var/log
+#      - /opt/upFiles:/opt/upFiles
     ports:
-      - "9851:80"
-	  - "9191:9191"
+      - "9861:80"
+      - "9191:9191"
     restart: always

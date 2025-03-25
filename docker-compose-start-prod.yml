@@ -7,9 +7,9 @@ services:
 #    environment:
 #      deploy_info: prod
     volumes:
-      - ../file/logs/logs1:/var/log
-      - /opt/upFiles:/opt/upFiles
+      - ../logs/logs1:/var/log
+#      - /opt/upFiles:/opt/upFiles
     ports:
-      - "9851:80"
-	  - "9191:9191"
+      - "9861:80"
+      - "9191:9191"
     restart: always
