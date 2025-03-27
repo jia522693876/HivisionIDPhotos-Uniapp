@@ -8,5 +8,4 @@ RUN  mkdir  -p  /var/www \
 ADD dist/ /var/www/dist/
 ADD web_main/ /var/www/web_main/
 ARG confName
-copy ${confName} /etc/nginx/nginx.conf
 
