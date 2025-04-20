@@ -11,6 +11,7 @@ services:
       - /HivisionIDPhotos-Uniapp/nginx-prod.conf:/etc/nginx/nginx.conf
       - /HivisionIDPhotos-Uniapp/var/log/nginx:/var/log/nginx
       - /HivisionIDPhotos-Uniapp/conf.d:/etc/nginx/conf.d
+	  - /HivisionIDPhotos-Uniapp/cert:/etc/nginx/cert
 #      - /opt/upFiles:/opt/upFiles
     ports:
       - "9861:80"
