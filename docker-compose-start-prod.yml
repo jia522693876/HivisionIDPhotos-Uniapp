@@ -14,6 +14,7 @@ services:
 	  - /HivisionIDPhotos-Uniapp/cert:/etc/nginx/cert
 #      - /opt/upFiles:/opt/upFiles
     ports:
-      - "9861:80"
+	  - "80:80"
+      - "443:443"
       - "9191:9191"
     restart: always

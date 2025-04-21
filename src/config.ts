@@ -5,22 +5,22 @@ interface EnvironmentConfig {
 const baseApi: { [key: string]: EnvironmentConfig } = {
   // 开发版
   development: {
-     host: "http://lianpujt.com:9191",
+     host: "https://lianpujt.com:9191",
 	 //host: "http://192.168.2.184:8080",
   },
   // 体验版
   trial: {
-     host: "http://lianpujt.com:9191",
+     host: "https://lianpujt.com:9191",
 	 //host: "http://192.168.2.184:8080",
   },
   // 正式版
   release: {
-     host: "http://lianpujt.com:9191",
+     host: "https://lianpujt.com:9191",
 	 //host: "http://192.168.2.184:8080",
   },
   // uniapp 正式环境
   production: {
-    host: "http://lianpujt.com:9191",
+    host: "https://lianpujt.com:9191",
 	//host: "http://192.168.2.184:8080",
 	
   },
